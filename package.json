@@ -1,5 +1,5 @@
 {
-  "name": "products",
+  "name": "products-management",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -11,6 +11,9 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "mongodb": "^7.1.1"
   }
 }

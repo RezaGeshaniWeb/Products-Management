@@ -1,5 +1,5 @@
 const ConnectToMongoDB = require('../utils/mongo-connection')
-const { ObjectId } = require("mongodb")
+const { ObjectId } = require('mongodb')
 const ProductCollection = "product"
 
 async function get() {
@@ -13,8 +13,12 @@ async function get() {
 async function getById(id) {
     const db = await new ConnectToMongoDB().Get()
     return new Promise(async (res, rej) => {
-        const product = await db.collection(ProductCollection).findOne({ _id: new ObjectId(id) }).toArray()
-        res(product)
+        try {
+            const product = await db.collection(ProductCollection).findOne({ _id: new ObjectId(id) })
+            res(product)
+        } catch (error) {
+            res(null)
+        }
     })
 }
 

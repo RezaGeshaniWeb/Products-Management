@@ -14,7 +14,7 @@ async function get(req, res) {
 async function getById(req, res) {
     try {
         const [, , , id] = req.url.split('/')
-        const product = await ProductModel.getById(Number(id))
+        const product = await ProductModel.getById(id)
         if (!product) {
             res.writeHead(404, { 'content-type': 'application/json' })
             res.write(JSON.stringify({ message: 'not found any product' }))
@@ -26,6 +26,9 @@ async function getById(req, res) {
         }
     } catch (error) {
         console.log(error)
+        res.writeHead(500, { 'content-type': 'application/json' })
+        res.write(JSON.stringify({ message: 'Server Error' }))
+        res.end()
     }
 }
 

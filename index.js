@@ -2,7 +2,7 @@ const http = require('http')
 const ProductsControllers = require('./controllers/product.controllers')
 const PORT = 3000
 const BASE_URL = '/api/products'
-const DYNAMIC_URL = /\/api\/products\/[0-9]+/
+const DYNAMIC_URL = /\/api\/products\/.+/
 
 const server = http.createServer((req, res) => {
     const { url, method } = req
