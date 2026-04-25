@@ -1,321 +1,274 @@
 # Products Management API
 
-یک API ساده برای مدیریت محصولات که با Node.js و ماژول HTTP بومی ساخته شده است.
+یک API ساده و سبک برای مدیریت محصولات (CRUD) با استفاده از Node.js (ماژول `http`) و MongoDB.
 
-## Base URL
+این پروژه بدون فریم‌ورک‌هایی مثل Express نوشته شده تا منطق مسیردهی، کنترلرها و ارتباط با دیتابیس به‌صورت شفاف و قابل یادگیری باشد.
+
+---
+
+## فهرست مطالب
+
+- معرفی پروژه
+- قابلیت‌ها
+- تکنولوژی‌ها
+- ساختار پروژه
+- پیش‌نیازها
+- نصب و راه‌اندازی
+- اجرای پروژه
+- تنظیمات دیتابیس
+- مستندات API
+- نمونه داده محصول
+- کدهای وضعیت و خطاها
+- نکات توسعه و بهبود
+
+---
+
+## معرفی پروژه
+
+این پروژه یک REST API برای مدیریت محصولات ارائه می‌دهد و عملیات زیر را پشتیبانی می‌کند:
+
+- دریافت لیست محصولات
+- دریافت یک محصول بر اساس شناسه
+- ایجاد محصول جدید
+- ویرایش محصول
+- حذف محصول
+
+آدرس پایه API:
+
+`/api/products`
+
+---
+
+## قابلیت‌ها
+
+- پیاده‌سازی کامل CRUD روی کالکشن محصولات
+- ساختار لایه‌ای (`controllers`، `model`، `utils`)
+- اتصال به MongoDB با درایور رسمی `mongodb`
+- پاسخ‌دهی JSON برای تمام مسیرها
+- پشتیبانی از شناسه داینامیک در مسیرها (`/api/products/:id`)
+
+---
+
+## تکنولوژی‌ها
+
+- Node.js
+- MongoDB
+- JavaScript (CommonJS)
+- Nodemon (برای توسعه)
+
+---
+
+## ساختار پروژه
+
+```text
+Products-Management/
+├── controllers/
+│   └── product.controllers.js
+├── model/
+│   └── product.model.js
+├── utils/
+│   └── mongo-connection.js
+├── index.js
+├── package.json
+└── README.md
 ```
-https://productsmanagement-1.onrender.com
-```
+
+توضیح فایل‌ها:
+
+- `index.js`: راه‌اندازی سرور HTTP و مدیریت Routeها
+- `controllers/product.controllers.js`: مدیریت درخواست/پاسخ و منطق API
+- `model/product.model.js`: عملیات مستقیم روی MongoDB (خواندن/نوشتن)
+- `utils/mongo-connection.js`: مدیریت اتصال به دیتابیس
+
+---
+
+## پیش‌نیازها
+
+قبل از اجرا مطمئن شوید موارد زیر نصب هستند:
+
+- Node.js نسخه 18 یا بالاتر (پیشنهادی: 20+)
+- MongoDB (لوکال یا ریموت)
+- npm
+
+---
 
 ## نصب و راه‌اندازی
 
-### پیش‌نیازها
-- Node.js (نسخه 14 یا بالاتر)
-- npm
+1) نصب وابستگی‌ها:
 
-### مراحل نصب
-
-1. کلون کردن یا دانلود پروژه
-```bash
-cd Products-Management
-```
-
-2. نصب وابستگی‌ها
 ```bash
 npm install
 ```
 
-3. اجرای پروژه در حالت توسعه
+2) اطمینان از فعال بودن MongoDB:
+
+- به‌صورت پیش‌فرض پروژه به این آدرس وصل می‌شود:
+  `mongodb://localhost:27017/products-management`
+
+---
+
+## اجرای پروژه
+
+### حالت توسعه (با ری‌استارت خودکار)
+
 ```bash
 npm run dev
 ```
 
-4. اجرای پروژه در حالت production
+### حالت عادی
+
 ```bash
 npm start
 ```
 
-سرور روی پورت 3000 اجرا می‌شود: `http://localhost:3000`
+پس از اجرا، سرور روی آدرس زیر در دسترس است:
 
-## ساختار پروژه
-
-```
-Products-Management/
-├── controllers/
-│   └── product.controllers.js    # کنترلرهای API
-├── model/
-│   └── product.model.js          # مدل و منطق دسترسی به داده
-├── data/
-│   └── products.json             # فایل ذخیره‌سازی محصولات
-├── index.js                      # فایل اصلی سرور
-├── package.json                  # فایل پیکربندی npm
-└── README.md                     # مستندات پروژه
-```
-
-## ساختار داده محصول
-
-```json
-{
-  "id": 1,
-  "title": "نام محصول",
-  "category": "man",
-  "price": "950.000",
-  "quantity": 1,
-  "img1": "https://example.com/image.jpg"
-}
-```
-
-### فیلدها:
-- `id` (number/string): شناسه یکتای محصول (به صورت خودکار در POST ایجاد می‌شود)
-- `title` (string): نام محصول
-- `category` (string): دسته‌بندی محصول (مثلاً: man, woman)
-- `price` (string/number): قیمت محصول
-- `quantity` (number, اختیاری): تعداد موجودی
-- `img1` (string, اختیاری): آدرس تصویر محصول
-
-## API Endpoints
-
-### 1. دریافت تمام محصولات
-
-دریافت لیست تمام محصولات
-
-**Request:**
-```http
-GET /api/products
-```
-
-**Response:**
-```json
-[
-  {
-    "id": 1,
-    "title": "عینک آفتابی دیتا",
-    "category": "man",
-    "price": "950.000",
-    "quantity": 1,
-    "img1": "https://example.com/image.jpg"
-  },
-  ...
-]
-```
-
-**Status Code:** `200 OK`
+`http://localhost:3000`
 
 ---
 
-### 2. دریافت محصول بر اساس ID
+## تنظیمات دیتابیس
 
-دریافت اطلاعات یک محصول خاص
+در حال حاضر رشته اتصال در فایل `utils/mongo-connection.js` به‌صورت ثابت قرار دارد:
 
-**Request:**
-```http
-GET /api/products/:id
-```
+`mongodb://localhost:27017/products-management`
 
-**Parameters:**
-- `id` (path parameter): شناسه محصول
+نام کالکشن محصولات در `model/product.model.js` برابر است با:
 
-**Response (موفق):**
-```json
-{
-  "id": 1,
-  "title": "عینک آفتابی دیتا",
-  "category": "man",
-  "price": "950.000",
-  "quantity": 1,
-  "img1": "https://example.com/image.jpg"
-}
-```
+`product`
 
-**Status Code:** `200 OK`
-
-**Response (یافت نشد):**
-```json
-{
-  "message": "not found any product"
-}
-```
-
-**Status Code:** `404 Not Found`
+> نکته: برای محیط Production بهتر است Connection String به متغیر محیطی (`.env`) منتقل شود.
 
 ---
 
-### 3. ایجاد محصول جدید
+## مستندات API
 
-ایجاد یک محصول جدید
+Base URL:
 
-**Request:**
-```http
-POST /api/products
-Content-Type: application/json
-```
+`http://localhost:3000/api/products`
 
-**Body:**
-```json
-{
-  "title": "عینک آفتابی جدید",
-  "category": "man",
-  "price": "950.000",
-  "quantity": 1,
-  "img1": "https://example.com/image.jpg"
-}
-```
+### 1) دریافت همه محصولات
 
-**نکته:** فیلد `id` به صورت خودکار با استفاده از timestamp ایجاد می‌شود.
+- **Method:** `GET`
+- **URL:** `/api/products`
+- **Response:** آرایه‌ای از محصولات (مرتب‌سازی بر اساس جدیدترین `_id`)
 
-**Response:**
-```json
-{
-  "message": "new product created !",
-  "data": {
-    "id": 1771264283913,
-    "title": "عینک آفتابی جدید",
-    "category": "man",
-    "price": "950.000",
-    "quantity": 1,
-    "img1": "https://example.com/image.jpg"
-  }
-}
-```
+نمونه:
 
-**Status Code:** `201 Created`
-
----
-
-### 4. به‌روزرسانی محصول
-
-به‌روزرسانی اطلاعات یک محصول موجود
-
-**Request:**
-```http
-PUT /api/products/:id
-Content-Type: application/json
-```
-
-**Parameters:**
-- `id` (path parameter): شناسه محصول
-
-**Body:**
-```json
-{
-  "title": "عنوان به‌روزرسانی شده",
-  "price": "1.200.000"
-}
-```
-
-**نکته:** می‌توانید فقط فیلدهایی که می‌خواهید به‌روزرسانی شوند را ارسال کنید.
-
-**Response (موفق):**
-```json
-{
-  "message": "product updated !"
-}
-```
-
-**Status Code:** `200 OK`
-
-**Response (یافت نشد):**
-```json
-{
-  "message": "not found product !"
-}
-```
-
-**Status Code:** `404 Not Found`
-
----
-
-### 5. حذف محصول
-
-حذف یک محصول از سیستم
-
-**Request:**
-```http
-DELETE /api/products/:id
-```
-
-**Parameters:**
-- `id` (path parameter): شناسه محصول
-
-**Response (موفق):**
-```json
-{
-  "message": "product delete !"
-}
-```
-
-**Status Code:** `200 OK`
-
-**Response (یافت نشد):**
-```json
-{
-  "message": "not found product !"
-}
-```
-
-**Status Code:** `404 Not Found`
-
----
-
-## مثال‌های استفاده
-
-### دریافت تمام محصولات
 ```bash
-curl https://productsmanagement-1.onrender.com/api/products
+curl -X GET http://localhost:3000/api/products
 ```
 
-### دریافت محصول با ID
+---
+
+### 2) دریافت محصول با شناسه
+
+- **Method:** `GET`
+- **URL:** `/api/products/:id`
+- **Response (موفق):** شیء محصول
+- **Response (ناموجود):** `404`
+
+نمونه:
+
 ```bash
-curl https://productsmanagement-1.onrender.com/api/products/1
+curl -X GET http://localhost:3000/api/products/680b7d7c5f8f1bd3dcf4f123
 ```
 
-### ایجاد محصول جدید
+---
+
+### 3) ایجاد محصول جدید
+
+- **Method:** `POST`
+- **URL:** `/api/products`
+- **Body:** JSON
+- **عملکرد:** فیلد `createdAt` به‌صورت خودکار اضافه می‌شود
+
+نمونه:
+
 ```bash
-curl -X POST https://productsmanagement-1.onrender.com/api/products \
+curl -X POST http://localhost:3000/api/products \
   -H "Content-Type: application/json" \
-  -d '{
-    "title": "عینک آفتابی جدید",
-    "category": "man",
-    "price": "950.000",
-    "quantity": 1,
-    "img1": "https://example.com/image.jpg"
-  }'
+  -d "{\"title\":\"Laptop\",\"price\":45000000,\"stock\":5}"
 ```
 
-### به‌روزرسانی محصول
+---
+
+### 4) ویرایش محصول
+
+- **Method:** `PUT`
+- **URL:** `/api/products/:id`
+- **Body:** JSON (فیلدهای قابل آپدیت)
+- **Response (موفق):** نتیجه `updateOne`
+
+نمونه:
+
 ```bash
-curl -X PUT https://productsmanagement-1.onrender.com/api/products/1 \
+curl -X PUT http://localhost:3000/api/products/680b7d7c5f8f1bd3dcf4f123 \
   -H "Content-Type: application/json" \
-  -d '{
-    "title": "عنوان جدید",
-    "price": "1.200.000"
-  }'
+  -d "{\"price\":43000000,\"stock\":8}"
 ```
 
-### حذف محصول
+---
+
+### 5) حذف محصول
+
+- **Method:** `DELETE`
+- **URL:** `/api/products/:id`
+- **Response (موفق):** نتیجه `deleteOne`
+
+نمونه:
+
 ```bash
-curl -X DELETE https://productsmanagement-1.onrender.com/api/products/1
+curl -X DELETE http://localhost:3000/api/products/680b7d7c5f8f1bd3dcf4f123
 ```
 
-## مدیریت خطا
+---
 
-- **404 Not Found**: زمانی که مسیر درخواستی یافت نشود یا محصول با ID مشخص وجود نداشته باشد
-- **500 Internal Server Error**: در صورت بروز خطا در سرور (در لاگ‌ها نمایش داده می‌شود)
+## نمونه داده محصول
 
-## تکنولوژی‌های استفاده شده
+اسکیما به‌صورت رسمی تعریف نشده، اما یک نمونه رایج:
 
-- **Node.js**: محیط اجرای JavaScript
-- **HTTP Module**: ماژول بومی Node.js برای ایجاد سرور
-- **File System (fs)**: برای خواندن و نوشتن فایل JSON
-- **nodemon**: برای اجرای خودکار در حالت توسعه
+```json
+{
+  "title": "Laptop",
+  "price": 45000000,
+  "stock": 5,
+  "createdAt": "2026-04-25T08:30:00.000Z"
+}
+```
 
-## نکات مهم
+---
 
-1. داده‌ها در فایل `data/products.json` ذخیره می‌شوند
-2. شناسه محصول در متد POST به صورت خودکار با `Date.now()` ایجاد می‌شود
-3. تمام درخواست‌ها و پاسخ‌ها به صورت JSON هستند
-4. در متد PUT، فقط فیلدهای ارسال شده به‌روزرسانی می‌شوند
+## کدهای وضعیت و خطاها
 
-## مجوز
+- `200` موفق برای دریافت/ویرایش/حذف
+- `201` ایجاد موفق
+- `404` مسیر نامعتبر یا نبودن محصول
+- `500` خطای داخلی سرور (در برخی مسیرها)
 
-ISC
+---
+
+## نکات توسعه و بهبود
+
+برای حرفه‌ای‌تر کردن پروژه می‌توان موارد زیر را اضافه کرد:
+
+- اعتبارسنجی ورودی‌ها (مثلا `title` اجباری و `price` عددی)
+- مدیریت خطای یکپارچه و پاسخ استاندارد
+- استفاده از متغیرهای محیطی برای `PORT` و `MONGODB_URI`
+- افزودن لایه Service
+- تست API با Jest/Supertest
+- مستندسازی خودکار API با Swagger
+- افزودن pagination و filter برای لیست محصولات
+
+---
+
+## اسکریپت‌ها
+
+- `npm run dev` اجرای پروژه با nodemon
+- `npm start` اجرای پروژه در حالت عادی
+
+---
+
+## لایسنس
+
+این پروژه در حال حاضر با لایسنس `ISC` تنظیم شده است (مطابق `package.json`).
