@@ -238,7 +238,3 @@ curl -X DELETE http://localhost:3000/api/products/680b7d7c5f8f1bd3dcf4f123
 - `npm start` اجرای پروژه در حالت عادی
 
 ---
-
-## لایسنس
-
-این پروژه در حال حاضر با لایسنس `ISC` تنظیم شده است (مطابق `package.json`).
